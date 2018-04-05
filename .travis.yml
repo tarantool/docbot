@@ -1,0 +1,28 @@
+sudo: true
+
+services:
+  - docker
+
+env: CONTAINER_NAME=tarantool/docbot:latest
+
+before_install:
+
+
+script:
+  - docker build -t ${CONTAINER_NAME} .
+
+after_success:
+  - docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+  - docker push ${CONTAINER_NAME}
+
+  - "( apt-get update -y && apt-get install openssh-client -y ) || ( which ssh-agent
+    || yum install openssh -y )"
+
+  - openssl aes-256-cbc -K $encrypted_2272aa30aa52_key -iv $encrypted_2272aa30aa52_iv
+                                                  -in travis_key.enc -out travis_key -d
+
+  - eval $(ssh-agent -s)
+  - chmod 600 travis_key
+  - ssh-add travis_key
+
+  - ssh -o "StrictHostKeyChecking no" docbot-deployer@try.tarantool.org
