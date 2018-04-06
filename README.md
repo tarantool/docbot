@@ -2,13 +2,13 @@
 
 TarantoolBot automates a process of creating a documentation request after external behaviour is changed.
 Documentation bot has its own account on mail.ru and on github.com. Its name is TarantoolBot.
-It uses GitHub webhooks to track all new comments on issues, labeled with 'doc update' label.
+It uses GitHub webhooks to track all new comments on issues, labeled with `doc update` label.
 In a comment a one can ask the bot to create a new issue on tarantool/doc, when the issue
 will be closed, using the special template. The one must mention the bot, write a title and
 description:
 ```
 @TarantoolBot document
-Title: one-line totle
+Title: one-line title
 Description that can be multiline,
 contain markup and links.
 ```
