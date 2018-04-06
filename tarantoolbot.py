@@ -1,4 +1,4 @@
-from bottle import run, post, request
+from bottle import run, post, get, request
 import requests
 import json
 
@@ -150,6 +150,10 @@ def index_post():
 						  issue_url)
 	else:
 		return 'Event "{}" is not needed.'.format(t)
+
+@get('/')
+def index_get():
+	return '<h1>H e l l o. I  a m  T a r a n t o o l B o t. B i p - B o p.</h1>'
 
 print('Starting bot')
 run(host='0.0.0.0', port=8888)
