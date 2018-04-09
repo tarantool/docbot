@@ -133,9 +133,14 @@ def process_issue_state_change(body, issue_state, issue_url):
 def index_post():
 	r = request.json
 	t = request.get_header('X-GitHub-Event')
-	issue_state = r['issue']['state']
-	issue_url = r['issue']['url']
-	labels = r['issue']['labels']
+	if not 'issue' in r:
+		return 'Event is not needed.'
+	issue = r['issue']
+	if not 'state' in issue:
+		return 'Event is not needed.'
+	issue_state = issue['state']
+	issue_url = issue['url']
+	labels = issue['labels']
 	# Process only specially labeled issues.
 	for label in labels:
 		if label['name'] == doc_label:
