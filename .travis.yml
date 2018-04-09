@@ -1,12 +1,12 @@
-sudo: true
-
+sudo: required
 services:
   - docker
 
+branches:
+  only:
+    - master
+
 env: CONTAINER_NAME=tarantool/docbot:latest
-
-before_install:
-
 
 script:
   - docker build -t ${CONTAINER_NAME} .

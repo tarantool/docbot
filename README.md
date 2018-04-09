@@ -1,5 +1,7 @@
 # DocBot - Tarantool Documentation pipeline bot
 
+[![Build Status](https://travis-ci.org/tarantool/docbot.svg?branch=master)](https://travis-ci.org/tarantool/docbot)
+
 TarantoolBot automates a process of creating a documentation request after external behaviour is changed.
 Documentation bot has its own account on mail.ru and on github.com. Its name is TarantoolBot.
 It uses GitHub webhooks to track all new comments on issues, labeled with `doc update` label.
