@@ -2,7 +2,6 @@ from bottle import run, post, get, request
 import requests
 import json
 
-doc_label = 'doc update'
 doc_request = ' document\r\n'
 bot_name = '@TarantoolBot'
 title_header = 'Title:'
@@ -140,13 +139,6 @@ def index_post():
 		return 'Event is not needed.'
 	issue_state = issue['state']
 	issue_url = issue['url']
-	labels = issue['labels']
-	# Process only specially labeled issues.
-	for label in labels:
-		if label['name'] == doc_label:
-			break
-	else:
-		return 'Needed label was not found.'
 
 	if t == 'issue_comment':
 		return process_issue_comment(r, issue_state, issue_url)
