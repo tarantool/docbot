@@ -112,7 +112,8 @@ def process_issue_comment(body, issue_state, issue_api):
 ##
 # Check that a just closed issue contains contains
 # a well-formatted doc update request. If it does, then
-# open a new issue in doc repository.
+# open a new issue in doc repository. For multiple doc requests
+# multiple issues will be created.
 # @param body GitHub hook body.
 # @param issue_state Issue status: closed, open, created.
 # @param issue_api API URL of the original issue.
@@ -125,16 +126,11 @@ def process_issue_state_change(body, issue_state, issue_api, issue_url):
 		return 'Not needed.'
 	comments = get_comments(issue_api)
 	comment = None
-	author = None
 	for c in comments:
 		comment, error = parse_comment(c['body'])
 		if comment:
-			author = c['user']['login']
-			break
-	else:
-		return 'Not found formatted comments.'
-	create_issue(comment["title"], comment["description"], issue_url,
-		     author)
+			create_issue(comment["title"], comment["description"],
+				     issue_url, c['user']['login'])
 	return 'Issue is processed.'
 
 @post('/')
