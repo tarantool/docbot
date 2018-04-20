@@ -79,7 +79,7 @@ def create_issue(title, description, issue_url, author):
 	print('Created issue: {}'.format(r.status_code))
 
 ##
-# Check that a new comment for an issue is the request.
+# Check that a new or edited comment for an issue is the request.
 # If it is, then try to parse it and send to a caller
 # notification about a result.
 # @param body GitHub hook body.
@@ -90,7 +90,8 @@ def create_issue(title, description, issue_url, author):
 # @retval Response to a GitHub hook.
 def process_issue_comment(body, issue_state, issue_api):
 	action = body['action']
-	if action != 'created' or issue_state != 'open':
+	if (action != 'created' and action != 'edited') or \
+	   issue_state != 'open':
 		return 'Not needed.'
 	comment = body['comment']
 	author = comment['user']['login']
@@ -100,7 +101,10 @@ def process_issue_comment(body, issue_state, issue_api):
 		send_comment(error, issue_api, author)
 	elif comment:
 		print('Request is processed ok')
-		send_comment('Accept.', issue_api, author)
+		if action == 'edited':
+			send_comment('Accept edited.', issue_api, author)
+		else:
+			send_comment('Accept.', issue_api, author)
 	else:
 		print('Ignore non-request comments')
 	return 'Doc request is processed.'
