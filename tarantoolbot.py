@@ -1,8 +1,9 @@
 from bottle import run, post, get, request
 import requests
 import json
+import datetime
 
-doc_request = ' document\r\n'
+doc_requests = [' document\r\n', ' document\n']
 bot_name = '@TarantoolBot'
 title_header = 'Title:'
 doc_repo_url = 'https://api.github.com/repos/tarantool/doc'
@@ -11,6 +12,27 @@ f = open('credentials.json')
 credentials = json.loads(f.read())
 f.close()
 token = credentials['GitHub']['token']
+
+LAST_EVENTS_SIZE = 30
+last_events = []
+
+##
+# Log an event at the end of the events queue. Once the queue
+# reaches size LAST_EVENTS_SIZE, the oldest event is deleted.
+# @param author GitHub login of the author.
+# @param action What to log.
+# @param body Message body.
+def create_event(author, action, body):
+	time = datetime.datetime.now().strftime('%b %d %H:%M:%S')
+	result = '<tr>'
+	result += '<td>{}</td>'.format(time)
+	result += '<td>{}</td>'.format(author)
+	result += '<td>{}</td>'.format(action)
+	result += '<td>{}</td>'.format(body)
+	result += '</tr>'
+	last_events.append(result)
+	if len(last_events) > LAST_EVENTS_SIZE:
+		last_events.pop(0)
 
 ##
 # Bot to track documentation update requests
@@ -35,9 +57,12 @@ def parse_comment(body):
 	if not body.startswith(bot_name):
 		return None, None
 	offset = len(bot_name)
-	if not body.startswith(doc_request, offset):
+	for dr in doc_requests:
+		if body.startswith(dr, offset):
+			offset += len(dr)
+			break
+	else:
 		return None, 'Invalid request type.'
-	offset += len(doc_request)
 	if not body.startswith(title_header, offset):
 		return None, 'Title not found.'
 	offset += len(title_header)
@@ -51,6 +76,7 @@ def parse_comment(body):
 # parser error message, or notification about accepting
 # a request.
 def send_comment(body, issue_api, to):
+	create_event(to, 'send_comment', body)
 	body = {'body': '@{}: {}'.format(to, body)}
 	url = '{}/comments?access_token={}'.format(issue_api, token)
 	r = requests.post(url, json=body)
@@ -68,11 +94,13 @@ def get_comments(issue_api):
 # Open a new issue in a documentation repository.
 # @param title Issue title.
 # @param description Issue description.
-# @param issue_url Link to a webpage with the original issue.
+# @param src_url Link to a webpage with the original issue or
+#        commit.
 # @param author Github login of the request author.
-def create_issue(title, description, issue_url, author):
+def create_issue(title, description, src_url, author):
+	create_event(author, 'create_issue', title)
 	description = '{}\nRequested by @{} in {}.'.format(description, author,
-							   issue_url)
+							   src_url)
 	body = {'title': title, 'body': description}
 	url = '{}/issues?access_token={}'.format(doc_repo_url, token)
 	r = requests.post(url, json=body)
@@ -133,30 +161,63 @@ def process_issue_state_change(body, issue_state, issue_api, issue_url):
 				     issue_url, c['user']['login'])
 	return 'Issue is processed.'
 
+##
+# Process a commit event, triggered on any push. If in the commit
+# message a request is found, then parse it and create an issue on
+# documentation, if the push is done into master.
+# @param c Commit object.
+# @param is_master_push True if the commit is pushed into the
+#        master branch.
+def process_commit(c, is_master_push):
+	body = c['message']
+	request_pos = body.find(bot_name)
+	if request_pos == -1:
+		return
+	request = body[request_pos:]
+	author = c['author']['username']
+	comment, error = parse_comment(request)
+	if error:
+		print('Error during request processing: {}'.format(error))
+		create_event(author, 'process_commit', error)
+	else:
+		create_event(author, 'process_commit', 'Accept')
+		if is_master_push:
+			create_issue(comment['title'], comment['description'],
+				     c['url'], author)
+
 @post('/')
 def index_post():
 	r = request.json
 	t = request.get_header('X-GitHub-Event')
-	if not 'issue' in r:
-		return 'Event is not needed.'
-	issue = r['issue']
-	if not 'state' in issue:
-		return 'Event is not needed.'
-	issue_state = issue['state']
-	issue_api = issue['url']
-	issue_url = issue['html_url']
+	if 'issue' in r:
+		issue = r['issue']
+		if not 'state' in issue:
+			return 'Event is not needed.'
+		issue_state = issue['state']
+		issue_api = issue['url']
+		issue_url = issue['html_url']
 
-	if t == 'issue_comment':
-		return process_issue_comment(r, issue_state, issue_api)
-	elif t == 'issues':
-		return process_issue_state_change(r, issue_state,
-						  issue_api, issue_url)
+		if t == 'issue_comment':
+			return process_issue_comment(r, issue_state, issue_api)
+		elif t == 'issues':
+			return process_issue_state_change(r, issue_state,
+							  issue_api, issue_url)
+		else:
+			return 'Event "{}" is not needed.'.format(t)
+	elif t == 'push':
+		repo = r['repository']
+		branch = r['ref'].split('/')[-1]
+		is_master_push = repo['master_branch'] == branch
+		for c in r['commits']:
+			process_commit(c, is_master_push)
 	else:
-		return 'Event "{}" is not needed.'.format(t)
+		return 'Event is not needed.'
 
 @get('/')
 def index_get():
-	return '<h1>H e l l o. I  a m  T a r a n t o o l B o t. B i p - B o p.</h1>'
+	return ('<h1>{}</h1><table border="1" cellspacing="2" ' +\
+		'cellpadding="2">{}</table>').format('TarantoolBot Journal',
+						     ' '.join(last_events))
 
 print('Starting bot')
 run(host='0.0.0.0', port=8888)
