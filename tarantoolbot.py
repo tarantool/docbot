@@ -1,17 +1,20 @@
-from bottle import run, post, get, request
+from bottle import run, post, get, request, default_app
 import requests
 import json
 import datetime
+import os
 
 doc_requests = [' document\r\n', ' document\n']
 bot_name = '@TarantoolBot'
 title_header = 'Title:'
 doc_repo_url = 'https://api.github.com/repos/tarantool/doc'
 
-f = open('credentials.json')
-credentials = json.loads(f.read())
-f.close()
-token = credentials['GitHub']['token']
+if os.getenv('GITHUB_TOKEN'):
+    token = os.getenv('GITHUB_TOKEN')
+else:
+    with open('credentials.json') as f:
+        credentials = json.loads(f.read())
+        token = credentials['GitHub']['token']
 
 LAST_EVENTS_SIZE = 30
 last_events = []
@@ -239,4 +242,8 @@ def index_get():
 
 
 print('Starting bot')
-run(host='0.0.0.0', port=8888)
+if __name__ == "__main__":
+    run(host='0.0.0.0', port=5000)
+
+# allow to run under gunicorn
+app = default_app()
