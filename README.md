@@ -16,7 +16,7 @@ Description that can be multiline,
 contain markup and links.
 ```
 When the bot sees its mentioning, it checks the request syntax and writes result
-of request parsing into its web [journal](http://try.tarantool.org:11116).
+of request parsing into its web [journal](https://tarantool-docbot.herokuapp.com).
 
 If the request had been done via issue comments, then the bot responds with
 either error description or with `@<CommentAuthor>: Accept` right into the issue
