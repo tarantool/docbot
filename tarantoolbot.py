@@ -226,7 +226,8 @@ def index_post():
             return 'Event "{}" is not needed.'.format(t)
     elif t == 'push':
         repo = r['repository']
-        branch = r['ref'].split('/')[-1]
+        # Strip 'refs/heads/' from beginning.
+        branch = '/'.join(r['ref'].split('/')[2:])
         is_master_push = repo['master_branch'] == branch
         for c in r['commits']:
             process_commit(c, is_master_push)
