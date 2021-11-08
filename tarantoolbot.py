@@ -89,6 +89,7 @@ def send_comment(body, issue_api, to):
     body = {'body': '@{}: {}'.format(to, body)}
     url = '{}/comments?access_token={}'.format(issue_api, token)
     r = requests.post(url, json=body)
+    r.raise_for_status()
     print('Sent comment: {}'.format(r.status_code))
 
 ##
@@ -99,6 +100,7 @@ def get_comments(issue_api):
     body = {'since': '1970-01-01T00:00:00Z'}
     url = '{}/comments?access_token={}'.format(issue_api, token)
     r = requests.get(url, json=body)
+    r.raise_for_status()
     return r.json()
 
 ##
@@ -117,6 +119,7 @@ def create_issue(title, description, src_url, author):
     body = {'title': title, 'body': description}
     url = '{}/issues?access_token={}'.format(doc_repo_url, token)
     r = requests.post(url, json=body)
+    r.raise_for_status()
     print('Created issue: {}'.format(r.status_code))
 
 ##
