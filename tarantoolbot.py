@@ -87,8 +87,11 @@ def parse_comment(body):
 def send_comment(body, issue_api, to):
     create_event(to, 'send_comment', body)
     body = {'body': '@{}: {}'.format(to, body)}
-    url = '{}/comments?access_token={}'.format(issue_api, token)
-    r = requests.post(url, json=body)
+    url = '{}/comments'.format(issue_api)
+    headers = {
+        'Authorization': 'token {}'.format(token),
+    }
+    r = requests.post(url, json=body, headers=headers)
     r.raise_for_status()
     print('Sent comment: {}'.format(r.status_code))
 
@@ -98,8 +101,11 @@ def send_comment(body, issue_api, to):
 
 def get_comments(issue_api):
     body = {'since': '1970-01-01T00:00:00Z'}
-    url = '{}/comments?access_token={}'.format(issue_api, token)
-    r = requests.get(url, json=body)
+    url = '{}/comments'.format(issue_api)
+    headers = {
+        'Authorization': 'token {}'.format(token),
+    }
+    r = requests.get(url, json=body, headers=headers)
     r.raise_for_status()
     return r.json()
 
@@ -117,8 +123,11 @@ def create_issue(title, description, src_url, author):
     description = '{}\nRequested by @{} in {}.'.format(description, author,
                                                        src_url)
     body = {'title': title, 'body': description}
-    url = '{}/issues?access_token={}'.format(doc_repo_url, token)
-    r = requests.post(url, json=body)
+    url = '{}/issues'.format(doc_repo_url)
+    headers = {
+        'Authorization': 'token {}'.format(token),
+    }
+    r = requests.post(url, json=body, headers=headers)
     r.raise_for_status()
     print('Created issue: {}'.format(r.status_code))
 
