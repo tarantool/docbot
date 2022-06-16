@@ -1,17 +1,13 @@
-FROM python:2
+FROM python:3.10.4-alpine
 
-RUN mkdir -p /usr/src/bot
-WORKDIR /usr/src/bot
+COPY requirements.txt /tmp
+RUN pip install --upgrade pip --no-cache-dir && \
+    pip install -r tmp/requirements.txt --no-cache-dir
 
-RUN pip install --upgrade pip
-
-COPY requirements.txt /usr/src/bot
-COPY tarantoolbot.py /usr/src/bot
-COPY write_credentials.sh /usr/src/bot
-
-RUN pip install -r requirements.txt
+COPY docbot /app/docbot
 
 ENV PORT=5000
 EXPOSE 5000
 
-CMD gunicorn --bind 0.0.0.0:$PORT tarantoolbot:app
+WORKDIR /app
+CMD gunicorn --bind 0.0.0.0:$PORT docbot.app:app
