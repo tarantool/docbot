@@ -1,0 +1,16 @@
+import os
+
+token = os.environ.get('GITHUB_TOKEN')
+assert token is not None
+doc_requests = [' document\r\n', ' document\n']
+bot_name = '@TarantoolBot'
+title_header = 'Title:'
+api = 'https://api.github.com/repos/tarantool/'
+doc_repo_urls = {
+    f'tarantool/tarantool': f'{api}doc',
+    f'tarantool/tarantool-ee': f'{api}enterprise_doc',
+    f'tarantool/sdk': f'{api}enterprise_doc',
+    f'tarantool/tdg': f'{api}tdg-doc',
+    f'tarantool/tdg2': f'{api}tdg-doc',
+}
+LAST_EVENTS_SIZE = 30
