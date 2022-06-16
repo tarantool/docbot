@@ -1,5 +1,3 @@
-import os
-
 from elasticapm.contrib.flask import ElasticAPM
 from flask import Flask, request
 
