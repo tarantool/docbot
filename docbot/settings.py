@@ -7,10 +7,10 @@ bot_name = '@TarantoolBot'
 title_header = 'Title:'
 api = 'https://api.github.com/repos/tarantool/'
 doc_repo_urls = {
-    f'tarantool/tarantool': f'{api}doc',
-    f'tarantool/tarantool-ee': f'{api}enterprise_doc',
-    f'tarantool/sdk': f'{api}enterprise_doc',
-    f'tarantool/tdg': f'{api}tdg-doc',
-    f'tarantool/tdg2': f'{api}tdg-doc',
+    'tarantool/tarantool': f'{api}doc',
+    'tarantool/tarantool-ee': f'{api}enterprise_doc',
+    'tarantool/sdk': f'{api}enterprise_doc',
+    'tarantool/tdg': f'{api}tdg-doc',
+    'tarantool/tdg2': f'{api}tdg-doc',
 }
 LAST_EVENTS_SIZE = 30
