@@ -8,6 +8,7 @@ title_header = 'Title:'
 api = 'https://api.github.com/repos/tarantool/'
 doc_repo_urls = {
     'tarantool/tarantool': f'{api}doc',
+    'tarantool/vshard': f'{api}doc',
     'tarantool/tarantool-ee': f'{api}enterprise_doc',
     'tarantool/sdk': f'{api}enterprise_doc',
     'tarantool/tdg': f'{api}tdg-doc',
