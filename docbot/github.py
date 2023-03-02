@@ -1,5 +1,6 @@
 import requests
 
+from .metrics import Metrics
 from .utils import create_event
 
 
@@ -29,6 +30,7 @@ class GitHub:
         status_code = self._send_request(url, body)
         print('Created issue: {}'.format(status_code))
 
+    @Metrics.github_latency.time()
     def _send_request(self, url, body, method='post'):
         headers = {
             'Authorization': 'token {}'.format(self.token),
