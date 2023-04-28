@@ -13,5 +13,7 @@ doc_repo_urls = {
     'tarantool/sdk': f'{api}enterprise_doc',
     'tarantool/tdg': f'{api}tdg-doc',
     'tarantool/tdg2': f'{api}tdg-doc',
+    'tarantool/tt': f'{api}doc',
+    'tarantool/tt-ee': f'{api}enterprise_doc',
 }
 LAST_EVENTS_SIZE = 30
