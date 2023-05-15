@@ -1,7 +1,9 @@
 import os
 
 token = os.environ.get('GITHUB_TOKEN')
+github_signature = os.environ.get('GITHUB_SIGN_KEY')
 assert token is not None
+assert github_signature is not None
 doc_requests = [' document\r\n', ' document\n']
 bot_name = '@TarantoolBot'
 title_header = 'Title:'

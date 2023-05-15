@@ -2,10 +2,11 @@ import logging
 
 from elasticapm.contrib.flask import ElasticAPM
 from prometheus_flask_exporter import PrometheusMetrics
-from flask import Flask, request
+from flask import Flask, Response, request
 
 from .handlers import webhook_handler, list_events_handler
 from .logging_config import LOGGING_CONFIG
+from .utils import is_verified_signature
 
 
 logging.config.dictConfig(LOGGING_CONFIG)
@@ -34,6 +35,11 @@ def index() -> str:
     labels={'event': lambda: request.headers.get('X-GitHub-Event', None)}
 )
 def webhook() -> str:
+    if not is_verified_signature(
+        request.data,
+        request.headers.get('X-Hub-Signature-256', None)
+    ):
+        return Response(status=403)
     data: dict = request.json
     event: str = request.headers.get('X-GitHub-Event')
     extra = {
