@@ -20,9 +20,10 @@ app.config['ELASTIC_APM'] = {
 }
 apm = ElasticAPM(app, logging=True)
 
-metrics = PrometheusMetrics(app)
+metrics = PrometheusMetrics(app, group_by='endpoint')
 
 @app.route("/", methods=['GET'])
+@metrics.do_not_track()
 def index() -> str:
     return list_events_handler()
 
