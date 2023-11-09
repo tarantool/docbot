@@ -13,4 +13,4 @@ MarkupSafe==2.1.1
 prometheus-flask-exporter==0.22.3
 requests==2.31.0
 urllib3==1.26.18
-Werkzeug==2.2.3
+Werkzeug==3.0.1
