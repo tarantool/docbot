@@ -39,3 +39,15 @@ def is_verified_signature(body, signature):
     if not hmac.compare_digest(expected_signature, signature):
         return False
     return True
+
+def is_verified_prometheus_token(token):
+    """Verify that the payload was sent from Prometheus via Bearer token.
+
+    Returns True if the request is authorized, otherwise False.
+
+    Args:
+        token: original request token to verify
+    """
+    if token == settings.prometheus_token:
+        return True
+    return False

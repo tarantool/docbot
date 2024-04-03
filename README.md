@@ -42,7 +42,12 @@ docker build -t docbot .
 Then run it like this:
 
 ```sh
-docker run -d -p5000:5000 -e GITHUB_TOKEN=<token> -e GITHUB_SIGN_KEY=<sign_key> --name docbot docbot
+docker run \
+    -d -p5000:5000 \
+    -e GITHUB_TOKEN=<token> \
+    -e GITHUB_SIGN_KEY=<sign_key> \
+    -e PROMETHEUS_TOKEN=<token> \
+    --name docbot docbot
 ```
 
 To check that it works try to get `localhost:5000` - it will print the
