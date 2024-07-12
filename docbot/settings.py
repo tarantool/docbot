@@ -19,5 +19,6 @@ doc_repo_urls = {
     'tarantool/tdg2': f'{api}tdg-doc',
     'tarantool/tt': f'{api}doc',
     'tarantool/tt-ee': f'{api}enterprise_doc',
+    'tarantool/grafana-dashboard': f'{api}doc',
 }
 LAST_EVENTS_SIZE = 30
