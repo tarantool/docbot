@@ -20,5 +20,6 @@ doc_repo_urls = {
     'tarantool/tt': f'{api}doc',
     'tarantool/tt-ee': f'{api}enterprise_doc',
     'tarantool/grafana-dashboard': f'{api}doc',
+    'tarantool/metrics': f'{api}doc',
 }
 LAST_EVENTS_SIZE = 30
