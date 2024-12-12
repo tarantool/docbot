@@ -13,12 +13,12 @@ api = 'https://api.github.com/repos/tarantool/'
 doc_repo_urls = {
     'tarantool/tarantool': f'{api}doc',
     'tarantool/vshard': f'{api}doc',
-    'tarantool/tarantool-ee': f'{api}enterprise_doc',
-    'tarantool/sdk': f'{api}enterprise_doc',
+    'tarantool/tarantool-ee': f'{api}doc',
+    'tarantool/sdk': f'{api}doc',
     'tarantool/tdg': f'{api}tdg-doc',
     'tarantool/tdg2': f'{api}tdg-doc',
     'tarantool/tt': f'{api}doc',
-    'tarantool/tt-ee': f'{api}enterprise_doc',
+    'tarantool/tt-ee': f'{api}doc',
     'tarantool/grafana-dashboard': f'{api}doc',
     'tarantool/metrics': f'{api}doc',
 }
